@@ -3,15 +3,15 @@ package com.ismole.converter.core
 	
 	public class CodeVariable extends CodeBase
 	{
-		public function CodeVariable(name:String = "varName",modifierName="public",
-			type:String = "Object",defaultValue:String="",
+		public function CodeVariable(name:String = "varName",modifierName:String="public",
+			type:CodeType = null,defaultValue:String="",
 			isStatic:Boolean = false,isConst:Boolean=false,metadata:String="")
 		{
 			super();
 			indent = 2;
 			this.name = name;
 			this.modifierName = modifierName;
-			this.type = type;
+			this.type = ( type == null ) ? new CodeType() : type;
 			this.isStatic = isStatic;
 			this.isConst = isConst;
 			this.defaultValue = defaultValue;
@@ -49,7 +49,7 @@ package com.ismole.converter.core
 		/**
 		 * 数据类型 
 		 */		
-		public var type:String = DataType.DT_OBJECT;
+		public var type:CodeType = new CodeType();
 		
 		/**
 		 * 变量注释 
@@ -58,26 +58,7 @@ package com.ismole.converter.core
 		
 		override public function toCode():String
 		{
-			var noteStr:String = "";
-			if(notation!=null)
-			{
-				notation.indent = indent;
-				noteStr = notation.toCode()+"\n";
-			}
-			var metadataStr:String = "";
-			if(metadata!=""&&metadata!=null)
-			{
-				metadataStr = getIndent()+"["+metadata+"]\n";
-			}
-			var staticStr:String = isStatic?Modifiers.M_STATIC+" ":"";
-			var valueStr:String = "";
-			if(defaultValue!=""&&defaultValue!=null)
-			{
-				valueStr = " = "+defaultValue;
-			}
-			var keyWord:String = isConst?KeyWords.KW_CONST:KeyWords.KW_VAR;
-			return noteStr+metadataStr+getIndent()+modifierName+" "+staticStr+keyWord
-				+" "+name+":"+type+valueStr+";";
+			return CodeGenerateTemplete.getInstance().generate(this);
 		}
 	}
 }

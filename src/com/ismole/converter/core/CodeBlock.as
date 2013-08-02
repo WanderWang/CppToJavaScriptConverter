@@ -135,6 +135,7 @@ package com.ismole.converter.core
 		
 		override public function toCode():String
 		{
+			throw new Error("error");
 			return codeStr.substr(0,codeStr.length-1);
 		}
 	}

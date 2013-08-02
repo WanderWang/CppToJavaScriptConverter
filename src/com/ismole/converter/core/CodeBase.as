@@ -29,7 +29,7 @@ package com.ismole.converter.core
 		/**
 		 * 获取缩进字符串
 		 */		
-		protected function getIndent(indent:int = -1):String
+		public function getIndent(indent:int = -1):String
 		{
 			if(indent==-1)
 				indent = _indent;

@@ -13,23 +13,20 @@ package com.ismole.converter.core
 			super();
 			indent = 1;
 		}
-		/**
-		 * 构造函数的参数列表 
-		 */		
-		private var argumentBlock:Array = [];
+		private var _argumentBlock:Array = [];
 		/**
 		 * 添加构造函数的参数
 		 */		
 		public function addArgument(argumentItem:CodeArguments):void
 		{
-			for each(var item:CodeArguments in argumentBlock)
+			for each(var item:CodeArguments in _argumentBlock)
 			{
 				if(item==argumentItem)
 				{
 					return ;
 				}
 			}
-			argumentBlock.push(argumentItem);
+			_argumentBlock.push(argumentItem);
 		}
 		/**
 		 * 构造函数代码块 
@@ -55,10 +52,7 @@ package com.ismole.converter.core
 		 */		
 		public var superClass:String = "";
 		
-		/**
-		 * 接口列表 
-		 */		
-		private var interfaceBlock:Array = [];
+		private var _interfaceBlock:Array = [];
 		
 		/**
 		 * 添加接口
@@ -67,19 +61,16 @@ package com.ismole.converter.core
 		{
 			if(interfaceName==null||interfaceName=="")
 				return;
-			for each(var item:String in interfaceBlock)
+			for each(var item:String in _interfaceBlock)
 			{
 				if(item==interfaceName)
 				{
 					return ;
 				}
 			}
-			interfaceBlock.push(interfaceName);
+			_interfaceBlock.push(interfaceName);
 		}
-		/**
-		 * 导入包区块 
-		 */		
-		private var importBlock:Array = [];
+		private var _importBlock:Array = [];
 		/**
 		 * 导入包
 		 */		
@@ -88,14 +79,14 @@ package com.ismole.converter.core
 			if(importItem==null||importItem=="")
 				return;
 
-			for each(var item:String in importBlock)
+			for each(var item:String in _importBlock)
 			{
 				if(item==importItem)
 				{
 					return ;
 				}
 			}
-			importBlock.push(importItem);
+			_importBlock.push(importItem);
 		}
 		
 		/**
@@ -103,49 +94,46 @@ package com.ismole.converter.core
 		 */		
 		private function sortImport():void
 		{
-			var length:int = importBlock.length;
+			var length:int = _importBlock.length;
 			for(var i:int=0; i<length; i++)
 			{
 				var min:int = i;
 				for(var j:int=i+1;j<length;j++)
 				{
-					if(importBlock[j]<importBlock[min])
+					if(_importBlock[j]<_importBlock[min])
 						min = j;
 				}
 				if(min!=i)
 				{
-					var imp:String = importBlock[min];
-					importBlock[min] = importBlock[i];
-					importBlock[i] = imp;
+					var imp:String = _importBlock[min];
+					_importBlock[min] = _importBlock[i];
+					_importBlock[i] = imp;
 				}
 			}
 		}
 		
-		/**
-		 * 变量定义区块 
-		 */		
-		private var variableBlock:Array = [];
+		private var _variableBlock:Array = [];
 		
 		/**
 		 * 添加变量
 		 */		
 		public function addVariable(variableItem:ICode):void
 		{
-			for each(var item:ICode in variableBlock)
+			for each(var item:ICode in _variableBlock)
 			{
 				if(item==variableItem)
 				{
 					return ;
 				}
 			}
-			variableBlock.push(variableItem);
+			_variableBlock.push(variableItem);
 		}
 		/**
 		 * 根据变量名获取变量定义
 		 */		
 		public function getVariableByName(name:String):CodeVariable
 		{
-			for each(var item:CodeVariable in variableBlock)
+			for each(var item:CodeVariable in _variableBlock)
 			{
 				if(item.name==name)
 				{
@@ -159,7 +147,7 @@ package com.ismole.converter.core
 		 */		
 		public function containsVar(name:String):Boolean
 		{
-			for each(var item:CodeVariable in variableBlock)
+			for each(var item:CodeVariable in _variableBlock)
 			{
 				if(item.name==name)
 				{
@@ -174,49 +162,46 @@ package com.ismole.converter.core
 		 */		
 		private function sortVariable():void
 		{
-			var length:int = variableBlock.length;
+			var length:int = _variableBlock.length;
 			for(var i:int=0; i<length; i++)
 			{
 				var min:int = i;
 				for(var j:int=i+1;j<length;j++)
 				{
-					if(variableBlock[j].name<variableBlock[min].name)
+					if(_variableBlock[j].name<_variableBlock[min].name)
 						min = j;
 				}
 				if(min!=i)
 				{
-					var variable:CodeVariable = variableBlock[min];
-					variableBlock[min] = variableBlock[i];
-					variableBlock[i] = variable;
+					var variable:CodeVariable = _variableBlock[min];
+					_variableBlock[min] = _variableBlock[i];
+					_variableBlock[i] = variable;
 				}
 			}
 		}
 		
-		/**
-		 * 函数定义区块 
-		 */		
-		private var functionBlock:Array = [];
+		private var _functionBlock:Array = [];
 		
 		/**
 		 * 添加函数
 		 */		
 		public function addFunction(functionItem:ICode):void
 		{
-			for each(var item:ICode in functionBlock)
+			for each(var item:ICode in _functionBlock)
 			{
 				if(item==functionItem)
 				{
 					return ;
 				}
 			}
-			functionBlock.push(functionItem);
+			_functionBlock.push(functionItem);
 		}
 		/**
 		 * 是否包含指定名称的函数
 		 */		
 		public function containsFunc(name:String):Boolean
 		{
-			for each(var item:CodeFunction in functionBlock)
+			for each(var item:CodeFunction in _functionBlock)
 			{
 				if(item.name==name)
 				{
@@ -231,20 +216,20 @@ package com.ismole.converter.core
 		 */		
 		private function sortFunction():void
 		{
-			var length:int = functionBlock.length;
+			var length:int = _functionBlock.length;
 			for(var i:int=0; i<length; i++)
 			{
 				var min:int = i;
 				for(var j:int=i+1;j<length;j++)
 				{
-					if(functionBlock[j].name<functionBlock[min].name)
+					if(_functionBlock[j].name<_functionBlock[min].name)
 						min = j;
 				}
 				if(min!=i)
 				{
-					var func:CodeFunction = functionBlock[min];
-					functionBlock[min] = functionBlock[i];
-					functionBlock[i] = func;
+					var func:CodeFunction = _functionBlock[min];
+					_functionBlock[min] = _functionBlock[i];
+					_functionBlock[i] = func;
 				}
 			}
 		}
@@ -260,140 +245,7 @@ package com.ismole.converter.core
 			sortImport();
 			sortVariable();
 			sortFunction();
-			
-			var isFirst:Boolean = true;
-			var index:int = 0;
-			var indentStr:String = getIndent();
-			
-			//打印包名
-			var returnStr:String = KeyWords.KW_PACKAGE+" "+packageName+"\n{\n";
-			
-			//打印导入包
-			index = 0;
-			while(index<importBlock.length)
-			{
-				var importItem:String = importBlock[index];
-				returnStr += indentStr+KeyWords.KW_IMPORT+" "+importItem+";\n";
-				index ++;
-			}
-			returnStr += "\n";
-			
-			//打印注释
-			if(notation!=null)
-			{
-				notation.indent = indent;
-				returnStr += notation.toCode()+"\n";
-			}
-			returnStr += indentStr+modifierName+" "+KeyWords.KW_CLASS+" "+
-				className;
-			
-			//打印父类
-			if(superClass!=null&&superClass!="")
-			{
-				returnStr += " "+KeyWords.KW_EXTENDS+" "+superClass;
-			}
-			
-			//打印接口列表
-			if(interfaceBlock.length>0)
-			{
-				returnStr += " "+KeyWords.KW_IMPLEMENTS+" ";
-				
-				index = 0;
-				while(interfaceBlock.length>index)
-				{
-					isFirst = true;
-					var interfaceItem:String = interfaceBlock[index];
-					if(isFirst)
-					{
-						returnStr += interfaceItem;
-						isFirst = false;
-					}
-					else
-					{
-						returnStr += ","+interfaceItem;
-					}
-					index++;
-				}
-			}
-			returnStr += "\n"+indentStr+"{\n";
-			
-			//打印变量列表
-			if(variableBlock.length>1)
-				returnStr += 
-					getIndent(indent+1)+"//==========================================================================\n"+
-					getIndent(indent+1)+"//                                定义成员变量\n"+
-					getIndent(indent+1)+"//==========================================================================\n";
-			index = 0;
-			while(variableBlock.length>index)
-			{
-				var variableItem:ICode = variableBlock[index];
-				returnStr += variableItem.toCode()+"\n\n";
-				index++;
-			}
-			returnStr += "\n";
-			
-			//打印构造函数
-			returnStr += 
-				getIndent(indent+1)+"//==========================================================================\n"+
-				getIndent(indent+1)+"//                                定义构造函数\n"+
-				getIndent(indent+1)+"//==========================================================================\n";
-			returnStr +=getIndent(indent+1)+Modifiers.M_PUBLIC+" "+KeyWords.KW_FUNCTION+" "+className+"(";
-			isFirst = true;
-			index = 0;
-			while(argumentBlock.length>index)
-			{
-				var arg:ICode = argumentBlock[index];
-				if(isFirst)
-				{
-					returnStr += arg.toCode();
-					isFirst = false;
-				}
-				else
-				{
-					returnStr += ","+arg.toCode();
-				}
-				index++;
-			}
-			returnStr += ")\n"+getIndent(indent+1)+"{\n";
-			var indent2Str:String = getIndent(indent+2);
-			if(superClass!=null&&superClass!="")
-			{
-				returnStr += indent2Str+"super();\n";
-			}
-			if(constructCode!=null)
-			{
-				var codes:Array = constructCode.toCode().split("\n");
-				index = 0;
-				while(codes.length>index)
-				{
-					var code:String = codes[index];
-					returnStr += indent2Str+code+"\n";
-					index++;
-				}
-			}
-			returnStr += getIndent(indent+1)+"}\n\n\n";
-			
-			
-			//打印函数列表
-			if(functionBlock.length>1)
-				returnStr += 
-					getIndent(indent+1)+"//==========================================================================\n"+
-					getIndent(indent+1)+"//                                定义成员方法\n"+
-					getIndent(indent+1)+"//==========================================================================\n";
-			index = 0;
-			while(functionBlock.length>index)
-			{
-				var functionItem:ICode = functionBlock[index];
-				returnStr += functionItem.toCode()+"\n\n";
-				index++;
-			}
-			
-			returnStr += indentStr+"}\n}";
-			
-			//不能移除完整包名，因为同目录下若出现同名类，这情况是无法判断的。
-			//returnStr = removeImportStr(returnStr);
-			
-			return returnStr;
+			return CodeGenerateTemplete.getInstance().generate(this);
 		}
 		/**
 		 * 移除多余的导入包名
@@ -401,14 +253,14 @@ package com.ismole.converter.core
 		private function removeImportStr(returnStr:String):String
 		{
 			var sameStrs:Array = [];
-			for(var i:int=0;i<importBlock.length;i++)
+			for(var i:int=0;i<_importBlock.length;i++)
 			{
 				var found:Boolean = false;
-				var name:String = getClassName(importBlock[i]);
+				var name:String = getClassName(_importBlock[i]);
 				var j:int;
-				for(j=i+1;j<importBlock.length;j++)
+				for(j=i+1;j<_importBlock.length;j++)
 				{
-					if(name==getClassName(importBlock[j]))
+					if(name==getClassName(_importBlock[j]))
 					{
 						found = true;
 						break;
@@ -416,12 +268,12 @@ package com.ismole.converter.core
 				}
 				if(found)
 				{
-					sameStrs.push(importBlock[i]);
-					sameStrs.push(importBlock[j]);
+					sameStrs.push(_importBlock[i]);
+					sameStrs.push(_importBlock[j]);
 				}
 			}
 			
-			var removeStrs:Array = importBlock.concat();
+			var removeStrs:Array = _importBlock.concat();
 			for(var index:int=0;index<removeStrs.length;index++)
 			{
 				var str:String = removeStrs[index];
@@ -470,6 +322,46 @@ package com.ismole.converter.core
 				}
 			}
 			return returnStr;
+		}
+
+		/**
+		 * 构造函数的参数列表 
+		 */
+		public function get argumentBlock():Array
+		{
+			return _argumentBlock;
+		}
+
+		/**
+		 * 导入包区块 
+		 */
+		public function get importBlock():Array
+		{
+			return _importBlock;
+		}
+
+		/**
+		 * 接口列表 
+		 */
+		public function get interfaceBlock():Array
+		{
+			return _interfaceBlock;
+		}
+
+		/**
+		 * 变量定义区块 
+		 */
+		public function get variableBlock():Array
+		{
+			return _variableBlock;
+		}
+
+		/**
+		 * 函数定义区块 
+		 */
+		public function get functionBlock():Array
+		{
+			return _functionBlock;
 		}
 		
 		

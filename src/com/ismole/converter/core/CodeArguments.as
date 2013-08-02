@@ -7,20 +7,20 @@ package com.ismole.converter.core
 	 */	
 	public class CodeArguments extends CodeBase
 	{
-		public function CodeArguments(name:String = "",type:String = "")
+		public function CodeArguments(name:String = "",type:CodeType = null)
 		{
 			super();
 			this.name = name;
-			this.type = type;
+			this.type = type == null ? new CodeType() : type;
 		}
 		
 		public var name:String = "";
 		
-		public var type:String = "";
+		public var type:CodeType = new CodeType();
 		
 		override public function toCode():String
 		{
-			return name+":"+type;
+			return CodeGenerateTemplete.getInstance().generate(this);
 		}
 	}
 }

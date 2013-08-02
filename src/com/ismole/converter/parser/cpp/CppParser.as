@@ -4,6 +4,7 @@ package com.ismole.converter.parser.cpp
 	import com.ismole.converter.core.CodeArguments;
 	import com.ismole.converter.core.CodeClass;
 	import com.ismole.converter.core.CodeFunction;
+	import com.ismole.converter.core.CodeType;
 	import com.ismole.converter.core.CodeVariable;
 	import com.ismole.converter.core.Modifiers;
 	import com.ismole.converter.parser.common.StringLineReader;
@@ -128,7 +129,7 @@ package com.ismole.converter.parser.cpp
 			var className:String = classDefenitionStr.split(":")[0];
 			var superClassStr:String = classDefenitionStr.substring(className.length + 1);
 			superClassStr = superClassStr.split(",")[0];
-			var superClassName = StringUtil.trim(superClassStr);
+			var superClassName:String = StringUtil.trim(superClassStr);
 			var cpClass:CodeClass = new CodeClass();
 			cpClass.className = className;
 			cpClass.superClass = superClassName;
@@ -190,13 +191,18 @@ package com.ismole.converter.parser.cpp
 								{
 									returnType = wordReader.readWord();
 								}
+								if (returnType == "static")
+								{
+									returnType = wordReader.readWord();
+									cpVariable.isStatic = true;
+								}
 								var functionName:String = wordReader.readWord();
 //								trace (returnType + " " + functionName + ":-->" + codeBlock);
 								
 								var cpFunction:CodeFunction = new CodeFunction();
 								cpFunction.name = functionName;
 								cpFunction.returnType = returnType;
-								
+								cpFunction.modifierName = modifierFlag;
 								while (wordReader.hasNext())
 								{
 									var arg:CodeArguments = new CodeArguments();
@@ -211,7 +217,7 @@ package com.ismole.converter.parser.cpp
 									}
 									var argName:String = wordReader.readWord();
 									arg.name = argName;
-									arg.type = argType;
+									arg.type = new CodeType(argType);
 									cpFunction.addArgument(arg);
 								}
 								
@@ -225,10 +231,15 @@ package com.ismole.converter.parser.cpp
 							var cpVariable:CodeVariable = new CodeVariable();
 							cpVariable.modifierName = modifierFlag;
 						
-							
-							var type:String = codeBlock.split(" ")[0];
-							var varName:String = StringUtil.trim(codeBlock.substr(type.length)).replace(";","");
-							cpVariable.type = type;
+							var wordReader:StringWordReader = new StringWordReader(codeBlock);
+							var type:String = wordReader.readWord();
+							if (type == "static")
+							{
+								type = wordReader.readWord();
+								cpVariable.isStatic = true;
+							}
+							var varName:String =  wordReader.readWord();
+							cpVariable.type = new CodeType(type);
 							cpVariable.name = varName;
 							cpClass.addVariable(cpVariable);
 //							trace (cpVariable.toCode());

@@ -27,23 +27,20 @@ package com.ismole.converter.core
 		 * 是否覆盖父级方法 ，默认false
 		 */		
 		public var isOverride:Boolean = false;
-		/**
-		 *参数列表 
-		 */		
-		private var argumentBlock:Array = [];
+		private var _argumentBlock:Array = [];
 		/**
 		 * 添加参数
 		 */		
 		public function addArgument(argumentItem:ICode):void
 		{
-			for each(var item:CodeArguments in argumentBlock)
+			for each(var item:CodeArguments in _argumentBlock)
 			{
 				if(item==argumentItem)
 				{
 					return;
 				}
 			}
-			argumentBlock.push(argumentItem);
+			_argumentBlock.push(argumentItem);
 		}
 		
 		/**
@@ -59,55 +56,16 @@ package com.ismole.converter.core
 		
 		override public function toCode():String
 		{
-			var index:int = 0;
-			var indentStr:String = getIndent();
-			var overrideStr:String = isOverride?KeyWords.KW_OVERRIDE+" ":"";
-			var staticStr:String = isStatic?Modifiers.M_STATIC+" ":"";
-			var noteStr:String = "";
-			if(notation!=null)
-			{
-				notation.indent = indent;
-				noteStr = notation.toCode()+"\n";
-			}
-			
-			var returnStr:String = noteStr+indentStr+overrideStr+modifierName+" "
-				+staticStr+KeyWords.KW_FUNCTION+" "+name+"(";
-			
-			var isFirst:Boolean = true;
-			index = 0;
-			while(argumentBlock.length>index)
-			{
-				var arg:ICode = argumentBlock[index];
-				if(isFirst)
-				{
-					returnStr += arg.toCode();
-					isFirst = false;
-				}
-				else
-				{
-					returnStr += ","+arg.toCode();
-				}
-				index++;
-			}
-			returnStr += ")";
-			if(returnType!="")
-				returnStr += ":"+returnType;
-			returnStr += "\n"+indentStr+"{\n";
-			if(codeBlock!=null)
-			{
-				var lines:Array = codeBlock.toCode().split("\n");
-				var codeIndent:String = getIndent(indent+1);
-				index = 0;
-				while(lines.length>index)
-				{
-					var line:String = lines[index];
-					returnStr += codeIndent+line+"\n";
-					index ++;
-				}
-			}
-			
-			returnStr += indentStr+"}";
-			return returnStr;
+			return CodeGenerateTemplete.getInstance().generate(this);
 		}
+
+		/**
+		 *参数列表 
+		 */
+		public function get argumentBlock():Array
+		{
+			return _argumentBlock.concat();
+		}
+
 	}
 }
