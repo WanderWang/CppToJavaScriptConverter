@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx"
+					   creationComplete="windowedapplication1_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import com.ismole.converter.Generator;
+			import com.ismole.converter.core.CodeClass;
+			import com.ismole.converter.parser.cpp.CppParser;
+			import com.ismole.converter.parser.common.StringLineReader;
+			import com.ismole.converter.parser.common.StringWordReader;
+			
+			import mx.events.FlexEvent;
+			
+			private function windowedapplication1_creationCompleteHandler(event:FlexEvent):void
+			{
+//				var generator:Generator = new Generator();
+//				generator.generate();
+				trace ("Hello")
+				
+				var filePath:String = "/Users/apple/Documents/WorkSpace/Cocos2dx/NavigationTime/NavigationTime/Classes/DockChangeSailorView.h";
+				var file:File = new File(filePath);
+				var stream:FileStream = new FileStream();
+				stream.open(file,FileMode.READ);
+				var str:String = stream.readUTFBytes(stream.bytesAvailable);
+				stream.close();
+				
+			
+				
+//				while (reader.hasNext())
+//				{
+//					trace (reader.readWord());
+//				}
+//				return;
+				var cppParser:CppParser = new CppParser();
+				cppParser.parse(str);
+			}
+			
+		
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+</s:WindowedApplication>
