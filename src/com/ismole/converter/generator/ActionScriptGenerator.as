@@ -4,6 +4,7 @@ package com.ismole.converter.generator
 	import com.ismole.converter.core.CodeClass;
 	import com.ismole.converter.core.CodeFunction;
 	import com.ismole.converter.core.CodeGenerateTemplete;
+	import com.ismole.converter.core.CodeType;
 	import com.ismole.converter.core.CodeVariable;
 	import com.ismole.converter.core.ICode;
 	import com.ismole.converter.core.KeyWords;
@@ -44,6 +45,11 @@ package com.ismole.converter.generator
 			var keyWord:String = code.isConst?KeyWords.KW_CONST:KeyWords.KW_VAR;
 			return noteStr+metadataStr+code.getIndent()+code.modifierName+" "+staticStr+keyWord
 				+" "+code.name+":"+code.type.toCode()+valueStr+";";
+		}
+		
+		override protected function generateCodeType(code:CodeType):String
+		{
+			return code.name;
 		}
 		
 		

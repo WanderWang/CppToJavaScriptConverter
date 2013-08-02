@@ -132,7 +132,7 @@ package com.ismole.converter.parser.cpp
 			var superClassName:String = StringUtil.trim(superClassStr);
 			var cpClass:CodeClass = new CodeClass();
 			cpClass.className = className;
-			cpClass.superClass = superClassName;
+			cpClass.superClass = new CodeType(superClassName);
 			
 			var classBodyStr:String = str.split("{")[1].split("}")[0];
 			parseClassBody(cpClass,classBodyStr);

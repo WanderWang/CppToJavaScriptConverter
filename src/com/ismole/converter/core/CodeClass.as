@@ -50,7 +50,7 @@ package com.ismole.converter.core
 		/**
 		 * 父类类名 
 		 */		
-		public var superClass:String = "";
+		public var superClass:CodeType = new CodeType();
 		
 		private var _interfaceBlock:Array = [];
 		
@@ -242,9 +242,9 @@ package com.ismole.converter.core
 		override public function toCode():String
 		{
 			//字符串排序
-			sortImport();
-			sortVariable();
-			sortFunction();
+//			sortImport();
+//			sortVariable();
+//			sortFunction();
 			return CodeGenerateTemplete.getInstance().generate(this);
 		}
 		/**

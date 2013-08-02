@@ -11,7 +11,6 @@ package com.ismole.converter.core
 		
 		override public function toCode():String
 		{
-			return this.name;
 			return CodeGenerateTemplete.getInstance().generate(this);
 		}
 		

@@ -7,6 +7,7 @@ package com.ismole.converter.generator
 	import com.ismole.converter.core.CodeVariable;
 	import com.ismole.converter.core.KeyWords;
 	import com.ismole.converter.core.Modifiers;
+	import com.ismole.converter.core.CodeType;
 	
 	public class JavaScriptGenerator extends CodeGenerateTemplete
 	{
@@ -35,7 +36,8 @@ package com.ismole.converter.generator
 			
 			var returnStr:String = "var {className} = {superclassName}.extend({\n{var}\n{function}\n});";
 			returnStr = returnStr.replace("{className}",code.className);
-			returnStr = returnStr.replace("{superclassName}",code.superClass);
+			trace ("==========" + code.superClass.toCode())
+			returnStr = returnStr.replace("{superclassName}",code.superClass.toCode());
 			
 			var varStr:String = "";
 			for each (var codeVar:CodeVariable in code.variableBlock)
@@ -132,6 +134,23 @@ package com.ismole.converter.generator
 			
 			returnStr += indentStr+"}";
 			return returnStr;
+		}
+		
+		
+		override protected function generateCodeType(code:CodeType):String
+		{
+			if (code.name.indexOf("cocos2d::CC") > -1)
+			{
+				return code.name.replace("cocos2d::CC","cc.");
+			}
+			else if (code.name.indexOf("cocos2d::extension::CC") > -1)
+			{
+				return code.name.replace("cocos2d::extension::CC","cc.");
+			}
+			else
+			{
+				return code.name;
+			}
 		}
 	}
 }

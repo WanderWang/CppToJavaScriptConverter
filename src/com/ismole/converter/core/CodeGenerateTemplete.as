@@ -15,7 +15,7 @@ package com.ismole.converter.core
 		{
 			if (_instance == null)
 			{
-				_instance = new ActionScriptGenerator();
+				_instance = new JavaScriptGenerator();
 			}
 			return _instance
 		}
@@ -38,6 +38,16 @@ package com.ismole.converter.core
 			{
 				return generateCodeClass(code as CodeClass);
 			}
+			else if (code is CodeType)
+			{
+				return generateCodeType(code as CodeType);
+			}
+			throw new Error("error");
+		}
+		
+		protected function generateCodeType(code:CodeType):String
+		{
+			throw new Error("override");
 			return null;
 		}
 		
