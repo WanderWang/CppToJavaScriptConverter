@@ -1,6 +1,6 @@
 package com.ismole.converter.parser.cpp
 {
-	import com.ismole.converter.StringUtil;
+	import com.ismole.converter.utils.StringUtil;
 	import com.ismole.converter.core.CodeArguments;
 	import com.ismole.converter.core.CodeClass;
 	import com.ismole.converter.core.CodeFunction;

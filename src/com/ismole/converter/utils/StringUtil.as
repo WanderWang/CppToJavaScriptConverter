@@ -1,4 +1,4 @@
-package com.ismole.converter
+package com.ismole.converter.utils
 {
 	/**
 	 * 字符串工具类

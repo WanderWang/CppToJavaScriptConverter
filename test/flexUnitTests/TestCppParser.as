@@ -4,6 +4,7 @@ package flexUnitTests
 	import com.ismole.converter.core.CodeFunction;
 	import com.ismole.converter.core.CodeVariable;
 	import com.ismole.converter.parser.cpp.CppParser;
+	import com.ismole.converter.utils.FileUtils;
 	
 	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
@@ -37,11 +38,7 @@ package flexUnitTests
 		public function testFunction():void
 		{
 			var filePath:String = "file:///Users/apple/Desktop/123guo/Classes2/module/hero/HeroUpgradeLayer.h";
-			var file:File = new File(filePath);
-			var stream:FileStream = new FileStream();
-			stream.open(file,FileMode.READ);
-			var str:String = stream.readUTFBytes(stream.bytesAvailable);
-			stream.close();
+			var str:String = FileUtils.readTextFile(filePath);
 			var cpClassList:Array = cppParser.parseFile(str);
 			var cpClass:CodeClass = cpClassList[0];
 			for each (var cpFunction:CodeFunction in cpClass.functionBlock)

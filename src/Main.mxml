@@ -8,6 +8,7 @@
 			import com.ismole.converter.core.CodeClass;
 			import com.ismole.converter.parser.common.StringWordReader;
 			import com.ismole.converter.parser.cpp.CppParser;
+			import com.ismole.converter.utils.FileUtils;
 			
 			import mx.events.FlexEvent;
 			
@@ -51,12 +52,7 @@
 			
 			private function executeHfile(file:File):void
 			{
-				var filePath:String = file.url;
-				var file:File = new File(filePath);
-				var stream:FileStream = new FileStream();
-				stream.open(file,FileMode.READ);
-				var str:String = stream.readUTFBytes(stream.bytesAvailable);
-				stream.close();
+				var str:String = FileUtils.readTextFile(file.url);
 				var cppParser:CppParser = new CppParser();
 				cppParser.onParseCppSuccessful = onParseCppSuccessful;
 				cppParser.parse(str);
