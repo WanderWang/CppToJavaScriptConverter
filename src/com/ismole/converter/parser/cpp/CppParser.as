@@ -150,7 +150,7 @@ package com.ismole.converter.parser.cpp
 		}
 		
 		
-		private function parseClassBody(cpClass:CodeClass,str:String):void
+		public function parseClassBody(cpClass:CodeClass,str:String):void
 		{
 			var reader:StringLineReader = new StringLineReader(str);
 			var modifierFlag:String = "none";
@@ -231,35 +231,34 @@ package com.ismole.converter.parser.cpp
 								}
 								
 								cpClass.addFunction(cpFunction);
-							
-							
 							}
 						}
 						else
 						{
-							var cpVariable:CodeVariable = new CodeVariable();
+							var cpVariable:CodeVariable = parseVariable(codeBlock)
 							cpVariable.modifierName = modifierFlag;
-						
-							var wordReader:StringWordReader = new StringWordReader(codeBlock);
-							var type:String = wordReader.readWord();
-							if (type == "static")
-							{
-								type = wordReader.readWord();
-								cpVariable.isStatic = true;
-							}
-							var varName:String =  wordReader.readWord();
-							cpVariable.type = new CodeType(type);
-							cpVariable.name = varName;
 							cpClass.addVariable(cpVariable);
-//							trace (cpVariable.toCode());
-//							trace (codeBlock);
-							
 						}
 						codeBlock = "";
 					}
 				}
 			}
-			
+		}
+		
+		public function parseVariable(codeBlock:String):CodeVariable
+		{
+			var cpVariable:CodeVariable = new CodeVariable();
+			var wordReader:StringWordReader = new StringWordReader(codeBlock);
+			var type:String = wordReader.readWord();
+			if (type == "static")
+			{
+				type = wordReader.readWord();
+				cpVariable.isStatic = true;
+			}
+			var varName:String =  wordReader.readWord();
+			cpVariable.type = new CodeType(type);
+			cpVariable.name = varName;
+			return cpVariable;
 		}
 	}
 }
