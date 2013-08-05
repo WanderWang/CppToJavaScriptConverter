@@ -5,7 +5,7 @@ package com.ismole.converter.core
 		public var name:String = DataType.DT_OBJECT;
 		public function CodeType(name:String = "Object")
 		{
-			this.name = name;
+			this.name = name.replace("*","");
 			super();
 		}
 		

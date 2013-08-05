@@ -34,8 +34,9 @@ package com.ismole.converter.parser.cpp
 			parseFile(str);
 		}
 		
-		private function parseFile(str:String):void
+		public function parseFile(str:String):Array
 		{
+			var classList:Array = [];
 			var index:int = 0;
 			var keywords:String = "";
 			var bracesCount:int = 0;
@@ -63,7 +64,11 @@ package com.ismole.converter.parser.cpp
 							var cpClass:CodeClass = parseClass(keywords);
 							if (cpClass != null)
 							{
-								onParseCppSuccessful(cpClass);
+								classList.push(cpClass);
+								if (onParseCppSuccessful != null)
+								{
+									onParseCppSuccessful(cpClass);
+								}
 							}
 							keywords = "";
 							mode = MODE_STANDARD;
@@ -112,11 +117,12 @@ package com.ismole.converter.parser.cpp
 				}
 				index++;
 			}
+			return classList;
 		}
 		
 		public var onParseCppSuccessful:Function;
 		
-		private function parseClass(str:String):CodeClass
+		public function parseClass(str:String):CodeClass
 		{
 			if (str.indexOf("{") == -1)
 			{
@@ -176,60 +182,12 @@ package com.ismole.converter.parser.cpp
 					if (codeBlock.indexOf(";") > -1)
 					{
 						codeBlock = StringUtil.trim(codeBlock);
-						if (codeBlock.indexOf("(") >= 0)
+						if (codeBlock.indexOf("(") >= 0)//有括号表示是函数，否则是变量
 						{
-							if (codeBlock.indexOf(" ") >= codeBlock.indexOf("(") || codeBlock.indexOf(" ") == -1)
+							var cpFunction:CodeFunction = parseFunction(codeBlock);
+							if (cpFunction != null)
 							{
-								trace ("warning:构造函数、析构函数或者宏：" + codeBlock);
-							}
-							else
-							{
-								var cpFunction:CodeFunction = new CodeFunction();
-								var reg:RegExp = new RegExp(/\ \*\ /gi); //todo 正则表达式bug  	var word:String = "Hello * World  * Hello;";
-								for ( var i:int = 0 ; i <= 20 ; i++)
-								{
-									codeBlock = codeBlock.replace(reg,"* ");
-								}
-								var wordReader:StringWordReader = new StringWordReader(codeBlock);
-								var returnType:String = wordReader.readWord();
-								if (returnType == "...")
-								{
-									trace ("可变参数，暂时不支持这种写法：" + codeBlock);
-									break;
-								}
-								if (returnType == "virtual")
-								{
-									returnType = wordReader.readWord();
-								}
-								if (returnType == "static")
-								{
-									returnType = wordReader.readWord();
-									cpFunction.isStatic = true;
-								}
-								var functionName:String = wordReader.readWord();
-//								trace (returnType + " " + functionName + ":-->" + codeBlock);
-								
-								cpFunction.name = functionName;
-								cpFunction.returnType = returnType;
 								cpFunction.modifierName = modifierFlag;
-								while (wordReader.hasNext())
-								{
-									var arg:CodeArguments = new CodeArguments();
-									var argType:String = wordReader.readWord();
-									if (argType == "")
-									{
-										break;
-									}
-									if (argType == "const")
-									{
-										argType = wordReader.readWord();
-									}
-									var argName:String = wordReader.readWord();
-									arg.name = argName;
-									arg.type = new CodeType(argType);
-									cpFunction.addArgument(arg);
-								}
-								
 								cpClass.addFunction(cpFunction);
 							}
 						}
@@ -255,10 +213,68 @@ package com.ismole.converter.parser.cpp
 				type = wordReader.readWord();
 				cpVariable.isStatic = true;
 			}
-			var varName:String =  wordReader.readWord();
 			cpVariable.type = new CodeType(type);
-			cpVariable.name = varName;
+			var varName:String =  wordReader.readWord();
+			cpVariable.name = varName.replace("*","");
 			return cpVariable;
+		}
+		
+		public function parseFunction(codeBlock:String):CodeFunction
+		{
+			if (codeBlock.indexOf(" ") >= codeBlock.indexOf("(") || codeBlock.indexOf(" ") == -1 || codeBlock.indexOf("~") >= 0)
+			{
+				trace ("warning:构造函数、析构函数或者宏：" + codeBlock);
+				return null;
+			}
+			else
+			{
+				var cpFunction:CodeFunction = new CodeFunction();
+				var reg:RegExp = new RegExp(/\ \*\ /gi); //todo 正则表达式bug  	var word:String = "Hello * World  * Hello;";
+				for ( var i:int = 0 ; i <= 20 ; i++)
+				{
+					codeBlock = codeBlock.replace(reg,"* ");
+				}
+				var wordReader:StringWordReader = new StringWordReader(codeBlock);
+				var returnType:String = wordReader.readWord();
+				if (returnType == "...")
+				{
+					trace ("可变参数，暂时不支持这种写法：" + codeBlock);
+					return null;
+				}
+				if (returnType == "virtual")
+				{
+					returnType = wordReader.readWord();
+				}
+				if (returnType == "static")
+				{
+					returnType = wordReader.readWord();
+					cpFunction.isStatic = true;
+				}
+				var functionName:String = wordReader.readWord();
+				//								trace (returnType + " " + functionName + ":-->" + codeBlock);
+				
+				cpFunction.name = functionName;
+				cpFunction.returnType = returnType;
+			
+				while (wordReader.hasNext())
+				{
+					var arg:CodeArguments = new CodeArguments();
+					var argType:String = wordReader.readWord();
+					if (argType == "")
+					{
+						break;
+					}
+					if (argType == "const")
+					{
+						argType = wordReader.readWord();
+					}
+					var argName:String = wordReader.readWord();
+					arg.name = argName;
+					arg.type = new CodeType(argType);
+					cpFunction.addArgument(arg);
+				}
+				return cpFunction;
+			}
 		}
 	}
 }
