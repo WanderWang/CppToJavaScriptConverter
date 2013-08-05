@@ -268,7 +268,11 @@ package com.ismole.converter.parser.cpp
 					{
 						argType = wordReader.readWord();
 					}
-					var argName:String = wordReader.readWord();
+					var argName:String = wordReader.readWord().replace("*","");
+					if (argName == "var")
+					{
+						argName = "var1";
+					}
 					arg.name = argName;
 					arg.type = new CodeType(argType);
 					cpFunction.addArgument(arg);
