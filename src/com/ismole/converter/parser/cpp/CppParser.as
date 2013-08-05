@@ -16,6 +16,7 @@ package com.ismole.converter.parser.cpp
 		 * 解析规则：
 		 * 多重继承的第一个类为基类，其他类会被忽略
 		 * public: 后面必须有回车
+		 * 类名声明  public class:(注意这里必须至少有个空格) public superclass
 		 * 
 		 * 变量声明： HeroModel* m_var ，类型和变量名之间必须是“ ”（可以是多个空格，但是不能是\t
 		 * 
@@ -62,7 +63,7 @@ package com.ismole.converter.parser.cpp
 							var cpClass:CodeClass = parseClass(keywords);
 							if (cpClass != null)
 							{
-								trace (cpClass.toCode());
+								onParseCppSuccessful(cpClass);
 							}
 							keywords = "";
 							mode = MODE_STANDARD;
@@ -113,6 +114,8 @@ package com.ismole.converter.parser.cpp
 			}
 		}
 		
+		public var onParseCppSuccessful:Function;
+		
 		private function parseClass(str:String):CodeClass
 		{
 			if (str.indexOf("{") == -1)
@@ -126,17 +129,23 @@ package com.ismole.converter.parser.cpp
 			var mode:String = MODE_STANDARD;
 			
 			var classDefenitionStr:String = str.split("{")[0];
-			var className:String = classDefenitionStr.split(":")[0];
-			var superClassStr:String = classDefenitionStr.substring(className.length + 1);
-			superClassStr = superClassStr.split(",")[0];
-			var superClassName:String = StringUtil.trim(superClassStr);
+			
+			
+			var wordReader:StringWordReader = new StringWordReader(classDefenitionStr);
+			var className:String = wordReader.readWord();
+			wordReader.readWord();
+			var superClassName:String = wordReader.readWord();
+			
+//			var className:String = classDefenitionStr.split(":")[0];
+//			var superClassStr:String = classDefenitionStr.substring(className.length + 1);
+//			superClassStr = superClassStr.split(",")[0];
+//			var superClassName:String = StringUtil.trim(superClassStr);
 			var cpClass:CodeClass = new CodeClass();
 			cpClass.className = className;
 			cpClass.superClass = new CodeType(superClassName);
 			
 			var classBodyStr:String = str.split("{")[1].split("}")[0];
 			parseClassBody(cpClass,classBodyStr);
-			trace ("====")
 			return cpClass;
 		}
 		
@@ -175,10 +184,11 @@ package com.ismole.converter.parser.cpp
 							}
 							else
 							{
-								var reg:RegExp = new RegExp(/\ \*/gi); //todo 正则表达式bug  	var word:String = "Hello * World  * Hello;";
+								var cpFunction:CodeFunction = new CodeFunction();
+								var reg:RegExp = new RegExp(/\ \*\ /gi); //todo 正则表达式bug  	var word:String = "Hello * World  * Hello;";
 								for ( var i:int = 0 ; i <= 20 ; i++)
 								{
-									codeBlock = codeBlock.replace(reg,"*");
+									codeBlock = codeBlock.replace(reg,"* ");
 								}
 								var wordReader:StringWordReader = new StringWordReader(codeBlock);
 								var returnType:String = wordReader.readWord();
@@ -194,12 +204,11 @@ package com.ismole.converter.parser.cpp
 								if (returnType == "static")
 								{
 									returnType = wordReader.readWord();
-									cpVariable.isStatic = true;
+									cpFunction.isStatic = true;
 								}
 								var functionName:String = wordReader.readWord();
 //								trace (returnType + " " + functionName + ":-->" + codeBlock);
 								
-								var cpFunction:CodeFunction = new CodeFunction();
 								cpFunction.name = functionName;
 								cpFunction.returnType = returnType;
 								cpFunction.modifierName = modifierFlag;

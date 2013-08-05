@@ -4,10 +4,10 @@ package com.ismole.converter.generator
 	import com.ismole.converter.core.CodeClass;
 	import com.ismole.converter.core.CodeFunction;
 	import com.ismole.converter.core.CodeGenerateTemplete;
+	import com.ismole.converter.core.CodeType;
 	import com.ismole.converter.core.CodeVariable;
 	import com.ismole.converter.core.KeyWords;
 	import com.ismole.converter.core.Modifiers;
-	import com.ismole.converter.core.CodeType;
 	
 	public class JavaScriptGenerator extends CodeGenerateTemplete
 	{
@@ -60,6 +60,12 @@ package com.ismole.converter.generator
 			return returnStr;
 		}
 		
+		/**
+		 *  生成变量 
+		 * @param code
+		 * @return 
+		 * 
+		 */
 		override protected function generateCodeVariable(code:CodeVariable):String
 		{
 			var noteStr:String = "";
@@ -83,7 +89,12 @@ package com.ismole.converter.generator
 			{
 				valueStr = " : null"; 
 			}
-			return noteStr+metadataStr+code.getIndent()+staticStr+code.name + valueStr + ",";
+			
+			
+			var varName:String = code.name;
+			varName = varName.replace("m_","_");
+			
+			return noteStr+metadataStr+code.getIndent()+staticStr+varName + valueStr + ",";
 		}
 		
 		override protected function generateCodeArguments(code:CodeArguments):String
@@ -105,7 +116,8 @@ package com.ismole.converter.generator
 			}
 			if (code.isStatic)
 			{
-				throw new Error("not support");
+				trace ("warning:尚不支持static")
+//				throw new Error("not support");
 			}
 			var returnStr:String = code.getIndent() + "{functionName} : function({functionArg})";
 			returnStr = returnStr.replace("{functionName}",code.name);

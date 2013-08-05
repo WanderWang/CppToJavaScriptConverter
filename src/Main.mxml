@@ -5,40 +5,85 @@
 					   creationComplete="windowedapplication1_creationCompleteHandler(event)">
 	<fx:Script>
 		<![CDATA[
-			import com.ismole.converter.Generator;
 			import com.ismole.converter.core.CodeClass;
-			import com.ismole.converter.parser.cpp.CppParser;
-			import com.ismole.converter.parser.common.StringLineReader;
 			import com.ismole.converter.parser.common.StringWordReader;
+			import com.ismole.converter.parser.cpp.CppParser;
 			
 			import mx.events.FlexEvent;
 			
+			private const dirPath:String =  "/Users/apple/Desktop/123guo/Classes2/";
+//			private const dirPath:String =  "/Users/apple/Documents/WorkSpace/Cocos2dx/NavigationTime/NavigationTime/Classes/";
+			private const exportPath:String = "/Users/apple/Sites/export"
+			
+			
+			
+			
 			private function windowedapplication1_creationCompleteHandler(event:FlexEvent):void
 			{
-//				var generator:Generator = new Generator();
-//				generator.generate();
-				trace ("Hello")
-				
-				var filePath:String = "/Users/apple/Documents/WorkSpace/Cocos2dx/NavigationTime/NavigationTime/Classes/DockChangeSailorView.h";
+				loop(dirPath);
+				nativeApplication.exit();
+			
+			}
+			
+			private function loop(path:String):void
+			{
+				var dir:File = new File(path);
+				var list:Array = dir.getDirectoryListing();
+				for each (var file:File in list)
+				{
+					if (file.isDirectory && file.nativePath.indexOf(".svn") == -1)
+					{
+						loop(file.url);
+					}
+					else if (file.extension == "h")
+					{
+//						if (file.name == "HeroLayer.h")
+//						{
+							executeHfile(file);
+//						}
+					}
+					
+				}
+			}
+
+			
+			
+			
+			private function executeHfile(file:File):void
+			{
+				var filePath:String = file.url;
 				var file:File = new File(filePath);
 				var stream:FileStream = new FileStream();
 				stream.open(file,FileMode.READ);
 				var str:String = stream.readUTFBytes(stream.bytesAvailable);
 				stream.close();
-				
-			
-				
-//				while (reader.hasNext())
-//				{
-//					trace (reader.readWord());
-//				}
-//				return;
 				var cppParser:CppParser = new CppParser();
+				cppParser.onParseCppSuccessful = onParseCppSuccessful;
 				cppParser.parse(str);
+				
+				function onParseCppSuccessful(code:CodeClass):void
+				{
+					//				trace (code.toCode());
+					//				return;
+					var exportDir:File = new File(exportPath);
+					var exportFilePath:String = file.nativePath.split(dirPath)[1];
+//					exportFilePath = exportFilePath.split(".")[0] + ".js";
+					var exportFilePathTemp:Array = exportFilePath.split("/");
+					if (exportFilePathTemp.length >= 2)
+					{
+						exportFilePathTemp.pop();
+					}
+					exportFilePath = exportFilePathTemp.join("/");
+					exportFilePath += "/" + code.className + ".js";
+					var exportFile:File = exportDir.resolvePath(exportFilePath);
+					var stream:FileStream = new FileStream();
+					stream.open(exportFile,FileMode.WRITE);
+					stream.writeUTFBytes(code.toCode());
+					stream.close();
+				}
 			}
 			
-		
-			
+						
 		]]>
 	</fx:Script>
 	<fx:Declarations>

@@ -4,6 +4,7 @@ package com.ismole.converter.parser.common
 	{
 		private var str:String;
 		private var index:int;
+		private var result:String = "";
 		public function StringWordReader(str:String)
 		{
 			this.str = str;
@@ -11,7 +12,7 @@ package com.ismole.converter.parser.common
 		
 		public function readWord():String
 		{
-			var result:String = "";
+			result = "";
 			var hasWordFlag:Boolean = false;
 			while (index < str.length)
 			{
@@ -41,7 +42,26 @@ package com.ismole.converter.parser.common
 		
 		private function isSepreter(char:String):Boolean
 		{
-			return char == "\n" || char == " " || char == "\t" || char == "(" || char == ")" || char == "," || char == ";";
+			if (char == "\n" || char == " " || char == "\t" || char == "(" || char == ")" || char == "," || char == ";")
+			{
+				return true;
+			}
+			if (char == ":")
+			{
+				var nextChar:String = str.charAt(index);
+				if (nextChar != ":")
+				{
+					return true;
+				}
+				else
+				{
+					result += nextChar;
+					index++;
+					return false;
+				}
+			}
+			return false;
+			return 
 		}
 		
 		public function hasNext():Boolean
