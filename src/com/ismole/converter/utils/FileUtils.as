@@ -9,6 +9,10 @@ package com.ismole.converter.utils
 		public static function readTextFile(filePath:String):String
 		{
 			var file:File = new File(filePath);
+			if (!file.exists)
+			{
+				return null;
+			}
 			var stream:FileStream = new FileStream();
 			stream.open(file,FileMode.READ);
 			var str:String = stream.readUTFBytes(stream.bytesAvailable);

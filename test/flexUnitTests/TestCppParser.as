@@ -2,6 +2,7 @@ package flexUnitTests
 {
 	import com.ismole.converter.core.CodeClass;
 	import com.ismole.converter.core.CodeFunction;
+	import com.ismole.converter.core.CodeNotation;
 	import com.ismole.converter.core.CodeVariable;
 	import com.ismole.converter.parser.cpp.CppParser;
 	import com.ismole.converter.utils.FileUtils;
@@ -49,6 +50,32 @@ package flexUnitTests
 				}
 			}
 			Assert.assertTrue("全部方法名正确");
+		}
+		
+		[Test]
+		public function testCpp():void
+		{
+			var filePath:String = "file:///Users/apple/Desktop/123guo/Classes2/module/hero/HeroUpgradeLayer.h";
+			cppParser.parse(new File(filePath));
+		}
+		
+		[Test]
+		public function testFunctionNotation():void
+		{
+			var func:CodeFunction = new CodeFunction();
+			func.name = "helloworld";
+			var codeBlock:CodeNotation = new CodeNotation("cpp code block");
+			func.codeBlock = codeBlock;
+		}
+		
+		
+		[Test]
+		public function testParseCppFunctionBody():void
+		{
+			var filePath:String = "file:///Users/apple/Desktop/123guo/Classes2/module/hero/HeroUpgradeLayer.cpp";
+			var str:String = FileUtils.readTextFile(filePath);
+			var cppBody:String = cppParser.parseCppFunctionBody(str,"HeroUpgradeLayer","onPressedUpgradeHandler");
+			Assert.assertEquals("不计算 '{' 和 '}' ，应该有19行",cppBody.split("\n").length,19);
 		}
 		
 		[BeforeClass]

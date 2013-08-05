@@ -52,10 +52,9 @@
 			
 			private function executeHfile(file:File):void
 			{
-				var str:String = FileUtils.readTextFile(file.url);
 				var cppParser:CppParser = new CppParser();
 				cppParser.onParseCppSuccessful = onParseCppSuccessful;
-				cppParser.parse(str);
+				cppParser.parse(file);
 				
 				function onParseCppSuccessful(code:CodeClass):void
 				{

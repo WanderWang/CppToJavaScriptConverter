@@ -1,14 +1,22 @@
 package com.ismole.converter.parser.cpp
 {
-	import com.ismole.converter.utils.StringUtil;
 	import com.ismole.converter.core.CodeArguments;
 	import com.ismole.converter.core.CodeClass;
 	import com.ismole.converter.core.CodeFunction;
+	import com.ismole.converter.core.CodeNotation;
 	import com.ismole.converter.core.CodeType;
 	import com.ismole.converter.core.CodeVariable;
 	import com.ismole.converter.core.Modifiers;
 	import com.ismole.converter.parser.common.StringLineReader;
 	import com.ismole.converter.parser.common.StringWordReader;
+	import com.ismole.converter.utils.FileUtils;
+	import com.ismole.converter.utils.StringUtil;
+	
+	import flash.filesystem.File;
+	
+	import flex.lang.reflect.Field;
+	
+	import org.flexunit.internals.namespaces.classInternal;
 
 	public class CppParser
 	{
@@ -28,9 +36,14 @@ package com.ismole.converter.parser.cpp
 		private static const MODE_CLASS:String = "class";
 		private static const MODE_STANDARD:String = "standard";
 		
+		private var cppFilePath:String;
 		
-		public function parse(str:String):void
-		{
+		private var cpClass:CodeClass;
+		
+		public function parse(file:File):void
+		{				
+			cppFilePath = file.url.replace(".h",".cpp");
+			var str:String = FileUtils.readTextFile(file.url);
 			parseFile(str);
 		}
 		
@@ -61,7 +74,7 @@ package com.ismole.converter.parser.cpp
 					{
 						if (bracesCount == 0)
 						{
-							var cpClass:CodeClass = parseClass(keywords);
+							parseClass(keywords);
 							if (cpClass != null)
 							{
 								classList.push(cpClass);
@@ -69,6 +82,7 @@ package com.ismole.converter.parser.cpp
 								{
 									onParseCppSuccessful(cpClass);
 								}
+								cpClass = null;
 							}
 							keywords = "";
 							mode = MODE_STANDARD;
@@ -146,7 +160,7 @@ package com.ismole.converter.parser.cpp
 //			var superClassStr:String = classDefenitionStr.substring(className.length + 1);
 //			superClassStr = superClassStr.split(",")[0];
 //			var superClassName:String = StringUtil.trim(superClassStr);
-			var cpClass:CodeClass = new CodeClass();
+			cpClass = new CodeClass();
 			cpClass.className = className;
 			cpClass.superClass = new CodeType(superClassName);
 			
@@ -277,8 +291,69 @@ package com.ismole.converter.parser.cpp
 					arg.type = new CodeType(argType);
 					cpFunction.addArgument(arg);
 				}
+				
+				
+				if (cppFilePath != null)
+				{
+					var cppStr:String = FileUtils.readTextFile(cppFilePath);
+					if (cppStr != null)
+					{
+						var str:String = parseCppFunctionBody(cppStr,cpClass.className,cpFunction.name);
+						cpFunction.codeBlock = new CodeNotation(str);
+					}
+				}
 				return cpFunction;
 			}
+		}
+		
+		
+		public function parseCppFunctionBody(cppBody:String,className:String,functionName:String):String
+		{
+			
+			var stringLineReader:StringLineReader = new StringLineReader(cppBody);
+			var blockCount:int = 0;
+			var isStart:Boolean = false;
+			var hasBlock:Boolean = false;
+			var needRecord:Boolean = false;
+			var resultList:Array = [];
+			while (stringLineReader.hasNext())
+			{
+				var line:String = stringLineReader.readLine();
+				if (line.indexOf(functionName) >= 0 && !isStart && line.indexOf(className) >= 0 && line.indexOf(";") == -1)
+				{
+					isStart = true;
+				}
+				
+				if (isStart)
+				{
+					if (needRecord)
+					{
+//						if (line.indexOf(" this->m_pUpgradeHeroBtn->setEnabled(false)") >= 0)
+//						{
+//							trace ("fuck")
+//						}
+						resultList.push(line);
+					}
+					if (line.indexOf("{") >= 0)
+					{
+						hasBlock = true;
+						blockCount++;
+						needRecord = true;
+					}
+					if (line.indexOf("}") >= 0)
+					{
+						blockCount--;
+					}
+					
+					if (blockCount == 0 && hasBlock)
+					{
+						needRecord = false;
+						break;
+					}
+				}
+			}
+			resultList.pop();//上面的算法有bug，会多一个}，所以这里pop一下
+			return resultList.join("\n");
 		}
 	}
 }

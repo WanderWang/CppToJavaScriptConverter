@@ -16,7 +16,7 @@ package com.ismole.converter.core
 		/**
 		 * 代码块 
 		 */		
-		public var codeBlock:CodeBlock;
+		public var codeBlock:ICode;
 		
 		/**
 		 * 是否是静态 ，默认false
