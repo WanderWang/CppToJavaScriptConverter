@@ -304,7 +304,7 @@ package com.ismole.converter.parser.cpp
 					if (cppStr != null)
 					{
 						var str:String = parseCppFunctionBody(cppStr,cpClass.className,cpFunction.name);
-						cpFunction.codeBlock = new CodeNotation(str);
+						cpFunction.codeBlock = new CodeNotation(str,1);
 					}
 				}
 				return cpFunction;
