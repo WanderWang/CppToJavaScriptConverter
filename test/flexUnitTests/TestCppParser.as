@@ -4,6 +4,7 @@ package flexUnitTests
 	import com.ismole.converter.core.CodeFunction;
 	import com.ismole.converter.core.CodeNotation;
 	import com.ismole.converter.core.CodeVariable;
+	import com.ismole.converter.parser.cpp.CppCodeBlockParser;
 	import com.ismole.converter.parser.cpp.CppParser;
 	import com.ismole.converter.utils.FileUtils;
 	
@@ -96,6 +97,19 @@ package flexUnitTests
 //			//  virtual cocos2d::CCPoint __offsetFromIndex(unsigned int index);
 //			上面这个方法有个//，应该解析不出来，目前给解析成了
 //				virtual : function(__offsetFromIndex , int , ){
+		}
+		
+		[Test]
+		public function testCodeBlock():void
+		{
+			var filePath:String = "file:///Users/apple/Desktop/123guo/Classes2/module/common/BaseSelectHeroLayer.cpp";
+			var str:String = FileUtils.readTextFile(filePath);
+			str = str.split("void BaseSelectHeroLayer::createTableView()\n")[1];//获取该方法的codeBlock
+			var parser:CppCodeBlockParser = new CppCodeBlockParser();
+			var code:String = parser.parse(str);
+			var lineCount:int = code.split("\n").length;
+			Assert.assertEquals("createTableView()这个方法应该有24行",lineCount,24);
+			
 		}
 		
 		[BeforeClass]
