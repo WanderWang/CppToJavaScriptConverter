@@ -106,7 +106,8 @@ package flexUnitTests
 			var str:String = FileUtils.readTextFile(filePath);
 			str = str.split("void BaseSelectHeroLayer::createTableView()\n")[1];//获取该方法的codeBlock
 			var parser:CppCodeBlockParser = new CppCodeBlockParser();
-			var code:String = parser.parse(str);
+			parser.add(str);
+			var code:String = parser.parse();
 			var lineCount:int = code.split("\n").length;
 			Assert.assertEquals("createTableView()这个方法应该有24行",lineCount,24);
 			

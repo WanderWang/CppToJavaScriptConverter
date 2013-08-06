@@ -2,11 +2,17 @@ package com.ismole.converter.parser.cpp
 {
 	public class CppCodeBlockParser
 	{
+		private var str:String = "";
 		public function CppCodeBlockParser()
 		{
 		}
 		
-		public function parse(str:String):String
+		public function add(str:String):void
+		{
+			this.str += str;
+		}
+		
+		public function parse():String
 		{
 			if (str.indexOf("{") != 0)
 			{
