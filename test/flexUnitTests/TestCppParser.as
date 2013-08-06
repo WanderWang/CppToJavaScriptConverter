@@ -69,6 +69,10 @@ package flexUnitTests
 		}
 		
 		
+		/**
+		 * 测试提取Cpp中的方法
+		 * 
+		 */
 		[Test]
 		public function testParseCppFunctionBody():void
 		{
@@ -76,6 +80,17 @@ package flexUnitTests
 			var str:String = FileUtils.readTextFile(filePath);
 			var cppBody:String = cppParser.parseCppFunctionBody(str,"HeroUpgradeLayer","onPressedUpgradeHandler");
 			Assert.assertEquals("不计算 '{' 和 '}' ，应该有19行",cppBody.split("\n").length,19);
+		}
+		
+		public function testParseFunctionWithNotation():void
+		{
+			var filePath:String = "file:///Users/apple/Desktop/123guo/Classes2/module/common/GameTableView.h";
+			var str:String = FileUtils.readTextFile(filePath);
+			
+//			protected:
+//			//  virtual cocos2d::CCPoint __offsetFromIndex(unsigned int index);
+//			上面这个方法有个//，应该解析不出来，目前给解析成了
+//				virtual : function(__offsetFromIndex , int , ){
 		}
 		
 		[BeforeClass]
