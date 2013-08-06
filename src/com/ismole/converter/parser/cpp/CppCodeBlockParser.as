@@ -3,6 +3,8 @@ package com.ismole.converter.parser.cpp
 	public class CppCodeBlockParser
 	{
 		private var str:String = "";
+		private var index:int = 0;
+		private var bracesCount:int = 0;
 		public function CppCodeBlockParser()
 		{
 		}
@@ -18,9 +20,6 @@ package com.ismole.converter.parser.cpp
 			{
 				return null;
 			}
-			var index:int = 0;
-			var keywords:String = "";
-			var bracesCount:int = 0;
 			while (index <= str.length)
 			{
 				var char:String = str.charAt(index);
