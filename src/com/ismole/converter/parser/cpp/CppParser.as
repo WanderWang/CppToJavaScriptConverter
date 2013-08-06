@@ -235,6 +235,11 @@ package com.ismole.converter.parser.cpp
 		
 		public function parseFunction(codeBlock:String):CodeFunction
 		{
+			if (codeBlock.indexOf("//") >= 0)
+			{
+				trace ("warning:此方法已经被注释：" + codeBlock);
+				return null;
+			}
 			if (codeBlock.indexOf(" ") >= codeBlock.indexOf("(") || codeBlock.indexOf(" ") == -1 || codeBlock.indexOf("~") >= 0)
 			{
 				trace ("warning:构造函数、析构函数或者宏：" + codeBlock);

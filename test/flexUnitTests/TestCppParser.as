@@ -82,10 +82,15 @@ package flexUnitTests
 			Assert.assertEquals("不计算 '{' 和 '}' ，应该有19行",cppBody.split("\n").length,19);
 		}
 		
+		/**
+		 * 测试当.h文件有注释的时候不应该被解析出来
+		 */ 
+		[Test]
 		public function testParseFunctionWithNotation():void
 		{
-			var filePath:String = "file:///Users/apple/Desktop/123guo/Classes2/module/common/GameTableView.h";
-			var str:String = FileUtils.readTextFile(filePath);
+			var str:String = "//  virtual cocos2d::CCPoint __offsetFromIndex(unsigned int index);"
+			var cpFunction:CodeFunction = cppParser.parseFunction(str);
+			Assert.assertNull("由于有注释，这个方法应该返回null",cpFunction);
 			
 //			protected:
 //			//  virtual cocos2d::CCPoint __offsetFromIndex(unsigned int index);
