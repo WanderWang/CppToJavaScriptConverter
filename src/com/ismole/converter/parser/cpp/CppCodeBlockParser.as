@@ -11,18 +11,23 @@ package com.ismole.converter.parser.cpp
 		
 		public function add(str:String):void
 		{
+			if (this.str.length == 0 && str.indexOf("{") == -1) return;
 			this.str += str;
 		}
 		
 		public function parse():String
 		{
-			if (str.indexOf("{") != 0)
+			if (str == "")
 			{
 				return null;
 			}
-			while (index <= str.length)
+			while (index < str.length)
 			{
 				var char:String = str.charAt(index);
+				if (char == ";")
+				{
+					var x:int;
+				}
 				if (char == "{")
 				{
 					bracesCount++;
@@ -33,7 +38,15 @@ package com.ismole.converter.parser.cpp
 				}
 				if (bracesCount == 0)
 				{
-					return str.substr(0,index);
+					str = str.substr(0,index + 1);
+					var strArr:Array = str.split("\n");
+					var temp:String = "";
+					while (temp.indexOf("}") == -1)
+					{
+						temp = strArr.pop();
+					}
+					strArr.shift();
+					return strArr.join("\n");
 				}
 				index++;
 			}

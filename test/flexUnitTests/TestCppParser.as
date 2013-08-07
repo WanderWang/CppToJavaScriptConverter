@@ -80,6 +80,7 @@ package flexUnitTests
 			var filePath:String = "file:///Users/apple/Desktop/123guo/Classes2/module/hero/HeroUpgradeLayer.cpp";
 			var str:String = FileUtils.readTextFile(filePath);
 			var cppBody:String = cppParser.parseCppFunctionBody(str,"HeroUpgradeLayer","onPressedUpgradeHandler");
+			trace (cppBody);
 			Assert.assertEquals("不计算 '{' 和 '}' ，应该有19行",cppBody.split("\n").length,19);
 		}
 		
@@ -115,7 +116,7 @@ package flexUnitTests
 			}
 			var code:String = parser.parse();
 			var lineCount:int = code.split("\n").length;
-			Assert.assertEquals("createTableView()这个方法应该有24行",lineCount,24);
+			Assert.assertEquals("createTableView这个方法应该有22行",lineCount,22);
 			
 		}
 		

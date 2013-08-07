@@ -318,9 +318,7 @@ package com.ismole.converter.parser.cpp
 			var stringLineReader:StringLineReader = new StringLineReader(cppBody);
 			var blockCount:int = 0;
 			var isStart:Boolean = false;
-			var hasBlock:Boolean = false;
-			var needRecord:Boolean = false;
-			var resultList:Array = [];
+			var codeBlockParser:CppCodeBlockParser = new CppCodeBlockParser();
 			while (stringLineReader.hasNext())
 			{
 				var line:String = stringLineReader.readLine();
@@ -331,34 +329,19 @@ package com.ismole.converter.parser.cpp
 				
 				if (isStart)
 				{
-					if (needRecord)
+					if (line.indexOf("\n") == -1)
 					{
-//						if (line.indexOf(" this->m_pUpgradeHeroBtn->setEnabled(false)") >= 0)
-//						{
-//							trace ("fuck")
-//						}
-						resultList.push(line);
+						line += "\n";
 					}
-					if (line.indexOf("{") >= 0)
+					codeBlockParser.add(line);
+					var result:String = codeBlockParser.parse();
+					if (result != null)
 					{
-						hasBlock = true;
-						blockCount++;
-						needRecord = true;
-					}
-					if (line.indexOf("}") >= 0)
-					{
-						blockCount--;
-					}
-					
-					if (blockCount == 0 && hasBlock)
-					{
-						needRecord = false;
 						break;
 					}
 				}
 			}
-			resultList.pop();//上面的算法有bug，会多一个}，所以这里pop一下
-			return resultList.join("\n");
+			return result;
 		}
 	}
 }
