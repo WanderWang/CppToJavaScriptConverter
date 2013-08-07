@@ -13,10 +13,12 @@
 			import mx.events.FlexEvent;
 			
 			private const dirPath:String =  "/Users/apple/Desktop/123guo/Classes2/";
-//			private const dirPath:String =  "/Users/apple/Documents/WorkSpace/Cocos2dx/NavigationTime/NavigationTime/Classes/";
 			private const exportPath:String = "/Users/apple/Sites/export"
+				
+//			private const dirPath:String =  "/Users/apple/Desktop/projwin32/";
+//			private const exportPath:String = "/Users/apple/Sites/export2"
 			
-			
+						
 			
 			
 			private function windowedapplication1_creationCompleteHandler(event:FlexEvent):void
