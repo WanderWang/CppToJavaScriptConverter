@@ -1,18 +1,22 @@
 CppToJavaScriptConverter
 ========================
 
-CppToJavaScriptConverter 是一个将C++转换为JavaScript的工具，采用AdobeAIR技术发布
+* CppToJavaScriptConverter is a static code converter tool from c++ to javascript .
+* This tool is written by ActionScript and base on AdobeAIR .
+* This is a DEV VERSION now , we do not recommended use this tool as a formal project .
 
-目前该项目只是一个Dev版本，不建议作为正式项目使用
-
-
-High-Level-Issue
+Known-Issue
 ----------------
-* 方法如果不同参数重载，解析只能解析其中一个
-* 目前无法解析.h文件里的注释
+* Different parameters method overload can only be resolved one cpp implements .
+* Can not be resolved .h file comments upper the method .
 
 TO-Do-List
 -------------
-* 修复各种生成的bug
-* 把代码中写死的dev路径改为配置
-* UI的开发
+* fix some generate bugs .
+* fix hard-code dev root .
+* UserInterface develop .
+
+Road-Map
+-------------
+* refactor the StringReader Class and CppParser Class .
+* Fix Known-Issue .
